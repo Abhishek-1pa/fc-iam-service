@@ -5,7 +5,7 @@ git push origin main
 docker build -t iam-service .
 docker push anchalshivank/iam-service
 
-ssh -i projectuser projectuser@34.131.181.137
+ssh -i projectuser projectuser@34.131.181.137 << 'EOF
 sudo docker pull anchalshivank/fc-iam-service
 sudo docker stop iam-container
 sudo docker rm iam-container
