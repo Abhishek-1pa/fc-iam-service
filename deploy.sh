@@ -10,7 +10,7 @@ docker build -t anchalshivank/iam-service .
 docker push anchalshivank/iam-service
 
 # SSH into your VM and redeploy the Docker container
-ssh -i /path/to/your/private/key projectuser@34.131.181.137 << 'EOF'
+ssh -i projectuser projectuser@34.131.181.137 << 'EOF'
 sudo docker pull anchalshivank/iam-service
 sudo docker stop iam-container
 sudo docker rm iam-container
