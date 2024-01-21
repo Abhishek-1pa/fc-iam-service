@@ -4,4 +4,4 @@ app = FastAPI()
 
 @app.get("/")
 def get_app():
-    return "hey sakshi"
+    return "hey dude"
