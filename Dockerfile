@@ -1,16 +1,34 @@
 FROM python:3.10.2
 
 WORKDIR /code
+
+# Create a virtual environment
 RUN python -m venv venv
 ENV PATH="/code/venv/bin:$PATH"
-COPY ./requirements.txt /code/requirements.txt
 
+# Copy requirements file and install dependencies
+COPY ./requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
+# Copy the application code
 COPY ./app /code/app
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Expose port 8001
+EXPOSE 8001
 
+# Set the default command to run the application
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]
 
-# If running behind a proxy like Nginx or Traefik add --proxy-headers
-# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80", "--proxy-headers"]
+# Set restart policy to always
+# This ensures that the container restarts automatically if the host computer restarts
+# Note: Docker Compose also offers restart policies, if you are using Docker Compose, you can specify the restart policy there instead.
+# For Docker Compose, add "restart: always" under the service definition.
+# Example:
+# services:
+#   my_service:
+#     restart: always
+# For standalone Docker, use the --restart option with the docker run command.
+# Example:
+# docker run --restart always -d my_image
+# This will ensure the container restarts automatically when the host computer restarts.
+# For more control over restart policies, you can explore other options like "unless-stopped" or "on-failure".
