@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, status , HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from jose import JWTError
 from .. import database, models, utils, schemas, oauth2
+from typing import Type
 
 router = APIRouter(
     
@@ -26,3 +28,7 @@ def login(user_credentials:OAuth2PasswordRequestForm = Depends(), db:Session = D
         token_type = "bearer")
     
     return login_response
+
+@router.post('/get_current_user', response_model=schemas.UserCreated)
+async def fetch_current_user(current_user :Type[models.User] | None= Depends(oauth2.get_current_user))->Type[models.User] | None:
+    return current_user
