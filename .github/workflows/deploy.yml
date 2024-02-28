@@ -12,9 +12,9 @@ jobs:
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa your_server_ip_address >> ~/.ssh/known_hosts
       - name: Deploy to Google Cloud VM
         run: |
-          ssh -i ~/.ssh/id_rsa ${{secrets.SSH_USERNAME}}@${{secrets.SERVER_IP}} "cd /path/to/your/application && git pull origin main && <your deployment commands here>"
+          ssh -i ~/.ssh/id_rsa $SSH_USERNAME@$SERVER_IP "cd /path/to/your/application && git pull origin main && <your deployment commands here>"
