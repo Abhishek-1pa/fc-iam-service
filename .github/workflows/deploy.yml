@@ -1,12 +1,16 @@
 name: Deploy to Remote Machine
+
 on:
   push:
     branches: [ main ]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Check SERVER_IP
+        run: echo "Server IP: $SERVER_IP"
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh
@@ -14,5 +18,3 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa $SERVER_IP >> ~/.ssh/known_hosts
       - name: Deploy to Google Cloud VM
-        run: |
-          ssh -i ~/.ssh/id_rsa $SSH_USERNAME@$SERVER_IP "cd /path/to/your/application && git pull origin main && <your deployment commands here>"
