@@ -4,3 +4,5 @@ venv/
 deploy.sh
 ssh_key
 ssh_key.pub
+__pycache__
+*.pyc
