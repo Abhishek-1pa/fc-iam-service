@@ -13,7 +13,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa your_server_ip_address >> ~/.ssh/known_hosts
+          ssh-keyscan -t rsa $SERVER_IP >> ~/.ssh/known_hosts
       - name: Deploy to Google Cloud VM
         run: |
           ssh -i ~/.ssh/id_rsa $SSH_USERNAME@$SERVER_IP "cd /path/to/your/application && git pull origin main && <your deployment commands here>"
