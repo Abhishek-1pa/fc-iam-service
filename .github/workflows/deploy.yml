@@ -8,24 +8,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Install SSH agent
+      - uses: actions/checkout@v2
+      - name: Install SSH key
         run: |
-          echo "Add your SSH key to the agent"
-          ssh-add -L
-          if [ $? -eq 2 ]; then
-            echo "No existing SSH agent found, creating a new one..."
-            eval "$(ssh-agent -s)"
-          fi
-      - name: Add SSH key (use secret reference, not the actual key)
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa your_server_ip_address >> ~/.ssh/known_hosts
+      - name: Deploy to Google Cloud VM
         run: |
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-keygen -i /dev/stdin -f id_rsa
-          chmod 600 id_rsa
-      - name: Upload SSH key to remote server (replace with server details)
-        run: |
-          ssh-copy-id ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}
-      - name: Deploy your application (replace with your deployment commands)
-        run: |
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} "cd /path/to/your/application && <your deployment commands here>"
+          ssh -i ~/.ssh/id_rsa ${{secrets.SSH_USERNAME}}@${{secrets.SERVER_IP}} "cd /path/to/your/application && git pull origin main && <your deployment commands here>"
