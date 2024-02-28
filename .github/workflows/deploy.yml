@@ -20,4 +20,4 @@ jobs:
           ssh-keyscan -t rsa  ${{secrets.SERVER_IP}} >> ~/.ssh/known_hosts
       - name: Deploy to Google Cloud VM
         run: |
-          ssh -i ~/.ssh/id_rsa ${{secrets.SSH_USERNAME}}@${{secrets.SERVER_IP}} "python3 -m http.server"
+          ssh -i ~/.ssh/id_rsa ${{secrets.SSH_USERNAME}}@${{secrets.SERVER_IP}}
