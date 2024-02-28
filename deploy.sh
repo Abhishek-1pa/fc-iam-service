@@ -1,18 +1,34 @@
 #!/bin/bash
 
-# Push code to GitHub
-git add .
-git commit -m "Update code"
-git push origin main
+# Change directory to 'backend' directory
+if [! -d "backend"]; then
+    mkdir backened
+fi
 
-# Build and push Docker image to Docker Hub
-docker build -t anchalshivank/iam-service .
-docker push anchalshivank/iam-service
+cd backened
 
-# SSH into your VM and redeploy the Docker container
-ssh -i projectuser projectuser@34.131.181.137 << 'EOF'
-sudo docker pull anchalshivank/iam-service
-sudo docker stop iam-container
-sudo docker rm iam-container
-sudo docker run -d -p 8000:8000 --name iam-container anchalshivank/iam-service
-EOF
+# Check if the repository exists, if not, clone it
+if [ ! -d "fc-iam-service" ]; then
+    git clone https://github.com/frozenmafia/fc-iam-service.git
+fi
+
+# Change directory to the cloned repository
+cd fc-iam-service
+
+# Pull the latest changes from the repository
+git pull
+
+# Build the new Docker image for fc-iam-service
+sudo docker build -t fc-iam-service-new .
+
+# Check if the container exists
+if sudo docker ps -a --format '{{.Names}}' | grep -Eq '^fc-iam-service$'; then
+    # Stop the existing container
+    sudo docker stop fc-iam-service
+
+    # Remove the existing container
+    sudo docker rm fc-iam-service
+fi
+
+# Run the new Docker container for fc-iam-service with restart options
+sudo docker run -d --restart=always --name fc-iam-service -p 8001:8001 fc-iam-service-new

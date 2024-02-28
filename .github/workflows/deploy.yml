@@ -21,10 +21,5 @@ jobs:
       - name: Deploy to Google Cloud VM
         run: |
           ssh -i ~/.ssh/id_rsa ${{secrets.SSH_USERNAME}}@${{secrets.SERVER_IP}} '
-            if [ -d "/home/test2" ]; then
-              echo "Directory exists";
-            else
-              echo "Directory does not exist";
-            fi
-            cd /home/test2 && pwd
+            sudo ./deploy.sh
           '
