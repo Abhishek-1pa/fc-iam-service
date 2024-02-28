@@ -1,0 +1,31 @@
+name: Deploy to Remote Machine
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install SSH agent
+        run: |
+          echo "Add your SSH key to the agent"
+          ssh-add -L
+          if [ $? -eq 2 ]; then
+            echo "No existing SSH agent found, creating a new one..."
+            eval "$(ssh-agent -s)"
+          fi
+      - name: Add SSH key (use secret reference, not the actual key)
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-keygen -i /dev/stdin -f id_rsa
+          chmod 600 id_rsa
+      - name: Upload SSH key to remote server (replace with server details)
+        run: |
+          ssh-copy-id ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}
+      - name: Deploy your application (replace with your deployment commands)
+        run: |
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} "cd /path/to/your/application && <your deployment commands here>"
