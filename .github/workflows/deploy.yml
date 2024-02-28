@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Check SERVER_IP
         run: |
-          echo "Server IP: $SERVER_IP"
+          echo "Server IP: ${{secrets.SERVER_IP}}"
       - name: Install SSH key
         run: |
           mkdir -p ~/.ssh
