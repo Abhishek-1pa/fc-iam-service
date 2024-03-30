@@ -17,6 +17,7 @@ class LoginResponse(BaseModel):
     username: str
     email: EmailStr
     token: str
+    refresh_token:str
     token_type: str
     
 class TokenData(BaseModel):
