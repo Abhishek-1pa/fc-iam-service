@@ -13,6 +13,8 @@ router = APIRouter(
 
 @router.post('/login', response_model=schemas.LoginResponse)
 def login(user_credentials:OAuth2PasswordRequestForm = Depends(), db:Session = Depends(database.get_db)):
+    if user_credentials.username is not "anchalshivank@example.com":
+        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED, detail=f'You cannot login with this username')
     user:models.User or None = db.query(models.User).filter(models.User.email == user_credentials.username).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User not found")
