@@ -14,7 +14,7 @@ router = APIRouter(
 @router.post('/login', response_model=schemas.LoginResponse)
 def login(user_credentials:OAuth2PasswordRequestForm = Depends(), db:Session = Depends(database.get_db)):
     if user_credentials.username != "anchalshivank@example.com":
-        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED, detail=f'You cannot login with this username')
+        raise HTTPException(status_code = 404, detail=f'You cannot login with this username')
     user:models.User or None = db.query(models.User).filter(models.User.email == user_credentials.username).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User not found")
@@ -53,7 +53,7 @@ async def refresh_token(refresh_token : str = Depends(utils.get_refresh_token), 
     return login_response
 
 
-@router.post('/get_current_user', response_model=schemas.UserCreated)
+@router.get('/get_current_user', response_model=schemas.UserCreated)
 async def fetch_current_user(current_user :Type[models.User] | None= Depends(oauth2.get_current_user))->Type[models.User] | None:
     return current_user
 
